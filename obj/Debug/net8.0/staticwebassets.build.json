@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "P5/NgXSyEn5JhE9zuR9+9wlHPR+HHofyEpLknkg6ybU=",
+  "Source": "FilaApp.Api",
+  "BasePath": "_content/FilaApp.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
