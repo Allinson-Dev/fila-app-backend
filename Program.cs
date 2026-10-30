@@ -14,6 +14,7 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p =>
     p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 
 var app = builder.Build();
+app.UseStaticFiles(); 
 app.UseCors();
 app.MapControllers();
 app.Run();

@@ -1,0 +1,26 @@
+# Back-end - Sistema de Fila de Atendimento
+
+Este é o back-end do sistema de fila de atendimento, desenvolvido em **ASP.NET Core 8 (C#)** e **MySQL**.
+
+## Tecnologias Utilizadas
+- .NET 8
+- Entity Framework Core
+- MySQL (via WAMP)
+- Pomelo.EntityFrameworkCore.MySql
+
+## Como rodar o projeto na sua máquina
+
+### 1. Pré-requisitos
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) instalado.
+- MySQL rodando (ex: WAMP ou XAMPP).
+
+### 2. Configurar o Banco de Dados
+1. Abra o MySQL Workbench (ou o terminal do MySQL).
+2. Execute o arquivo `fila_db.sql` (que está na raiz deste projeto) para criar o banco `fila_db` e todas as tabelas já configuradas.
+3. Confira se o arquivo `appsettings.json` tem a string de conexão correta para o seu MySQL (por padrão, usuário `root` e senha vazia).
+
+### 3. Rodar a API
+Abra o terminal na pasta do projeto e rode:
+```bash
+dotnet restore
+dotnet run

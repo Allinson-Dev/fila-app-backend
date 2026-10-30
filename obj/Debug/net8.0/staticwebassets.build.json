@@ -1,0 +1,39 @@
+{
+  "Version": 1,
+  "Hash": "sWGwOdkuKeoQ6D+qmfC836gKp13imEKikyEBjYZ4lLk=",
+  "Source": "FilaApp.Api",
+  "BasePath": "_content/FilaApp.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "FilaApp.Api\\wwwroot",
+      "Source": "FilaApp.Api",
+      "ContentRoot": "C:\\Users\\ALLINSON\\Desktop\\fila-app\\backend\\wwwroot\\",
+      "BasePath": "_content/FilaApp.Api",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\ALLINSON\\Desktop\\fila-app\\backend\\wwwroot\\teste.html",
+      "SourceId": "FilaApp.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\ALLINSON\\Desktop\\fila-app\\backend\\wwwroot\\",
+      "BasePath": "_content/FilaApp.Api",
+      "RelativePath": "teste.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\teste.html"
+    }
+  ]
+}
