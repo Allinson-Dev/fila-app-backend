@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\FilaApp.Api.props" />
+</Project>

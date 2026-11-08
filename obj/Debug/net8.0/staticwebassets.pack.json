@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\ALLINSON\\Desktop\\fila-app\\backend\\wwwroot\\teste.html",
+      "PackagePath": "staticwebassets\\teste.html"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.FilaApp.Api.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.FilaApp.Api.props",
+      "PackagePath": "build\\FilaApp.Api.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.FilaApp.Api.props",
+      "PackagePath": "buildMultiTargeting\\FilaApp.Api.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.FilaApp.Api.props",
+      "PackagePath": "buildTransitive\\FilaApp.Api.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

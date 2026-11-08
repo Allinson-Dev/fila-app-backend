@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel de Teste - Back-end Fila</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f0f0; padding: 20px; text-align: center; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        button { padding: 10px 15px; margin: 5px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; color: white; }
+        .btn-verde { background: #28a745; }
+        .btn-azul { background: #007bff; }
+        .btn-laranja { background: #fd7e14; }
+        .btn-vermelho { background: #dc3545; }
+        .tela-tv { background: #222; color: #0f0; padding: 20px; border-radius: 8px; margin-top: 20px; font-family: monospace; font-size: 24px; text-align: left; }
+        .controles { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
+        
+        /* Estilos adicionais para os novos formulários */
+        .form-box { margin-top: 24px; padding: 16px; border: 1px solid #ddd; border-radius: 8px; text-align: left; }
+        .form-box h3 { margin-top: 0; color: #333; }
+        .form-box input { margin: 4px 0; padding: 6px; width: 100%; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        .form-box button { margin-top: 6px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .form-box button:hover { background: #0056b3; }
+        .msg { margin-top: 8px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Painel de Teste (Back-end)</h2>
+    
+    <div class="controles">
+        <button class="btn-verde" onclick="gerarSenha()">1. Gerar Senha (POST)</button>
+        <button class="btn-azul" onclick="chamarSenha()">2. Chamar Senha (POST)</button>
+        <button class="btn-laranja" onclick="avancarEtapa()">3. Avançar Etapa (POST)</button>
+        <button class="btn-vermelho" onclick="zerarTeste()">Zerar Tela (Reload)</button>
+        <button class="btn-vermelho" onclick="resetarTudo()">4. Zerar Senhas (Reset)</button>
+    </div>
+
+    <div class="tela-tv" id="tela">
+        Aguardando ações...
+    </div>
+
+    <!-- ===== CADASTRO DE CLIENTE ===== -->
+    <div class="form-box">
+      <h3>Cadastrar Cliente</h3>
+      <input id="novoNome"     placeholder="Nome">
+      <input id="novoCpf"      placeholder="CPF">
+      <input id="novoTelefone" placeholder="Telefone">
+      <input id="novoEndereco" placeholder="Endereço">
+      <button onclick="cadastrarCliente()">Cadastrar</button>
+      <div id="msgCadastro" class="msg"></div>
+    </div>
+
+    <!-- ===== CONSULTA POR CPF ===== -->
+    <div class="form-box">
+      <h3>Consultar por CPF</h3>
+      <input id="buscaCpf" placeholder="Digite o CPF exato">
+      <button onclick="consultarCpf()">Buscar</button>
+      <div id="resultadoCpf" class="msg"></div>
+    </div>
+</div>
+
+<script>
+    const API_URL = "http://localhost:5000/api/senhas";
+    let senhaAtualId = null;
+
+    async function gerarSenha() {
+        try {
+            const res = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ filaId: 1, servicoId: 1 })
+            });
+            const data = await res.json();
+            senhaAtualId = data.id;
+            document.getElementById("tela").innerHTML = `Senha Gerada!<br><br>ID: ${data.id}<br>Número: ${data.numero}<br>Status: aguardando`;
+        } catch (e) {
+            document.getElementById("tela").innerHTML = "Erro ao gerar senha.";
+        }
+    }
+
+    async function chamarSenha() {
+        if (!senhaAtualId) return document.getElementById("tela").innerHTML = "Gere uma senha primeiro!";
+        try {
+            await fetch(`${API_URL}/${senhaAtualId}/chamar`, { method: "POST" });
+            atualizarTela();
+        } catch (e) {
+            document.getElementById("tela").innerHTML = "Erro ao chamar.";
+        }
+    }
+
+    async function avancarEtapa() {
+        if (!senhaAtualId) return document.getElementById("tela").innerHTML = "Gere e chame uma senha primeiro!";
+        try {
+            const res = await fetch(`${API_URL}/${senhaAtualId}/avancar`, { method: "POST" });
+            const data = await res.json();
+            if (data.finalizada) {
+                document.getElementById("tela").innerHTML = `Senha ${senhaAtualId}<br><br>FINALIZADA!`;
+                senhaAtualId = null;
+            } else {
+                atualizarTela();
+            }
+        } catch (e) {
+            document.getElementById("tela").innerHTML = "Erro ao avançar.";
+        }
+    }
+
+    async function atualizarTela() {
+        try {
+            const res = await fetch(`${API_URL}/chamada-atual`);
+            const s = await res.json();
+            if (s) {
+                document.getElementById("tela").innerHTML = `
+                    <div style="font-size: 40px; color: yellow;">${s.numero}</div>
+                    Cliente: ${s.clienteNome || 'Sem cadastro'}<br>
+                    Serviço: ${s.servicoNome}<br>
+                    Fila: ${s.filaNome}<br>
+                    Etapa Atual: <span style="color: cyan;">${s.etapaNome || 'Recepção'}</span><br>
+                    Status: ${s.status}
+                `;
+            } else {
+                document.getElementById("tela").innerHTML = "Nenhuma senha chamada.";
+            }
+        } catch (e) {
+            document.getElementById("tela").innerHTML = "Erro ao buscar dados.";
+        }
+    }
+
+    function zerarTeste() {
+        location.reload();
+    }
+
+    async function resetarTudo() {
+        if (!confirm("Tem certeza que deseja apagar todas as senhas e reiniciar a contagem?")) return;
+        try {
+            await fetch("http://localhost:5000/api/reset", { method: "POST" });
+            document.getElementById("tela").innerHTML = "Contagem zerada!<br><br>Você já pode gerar uma nova senha.";
+            senhaAtualId = null;
+        } catch (e) {
+            document.getElementById("tela").innerHTML = "Erro ao tentar resetar. A API está rodando?";
+        }
+    } // <--- ESTA CHAVE ESTAVA FALTANDO
+
+    async function cadastrarCliente() {
+        // Pega os valores corretamente usando getElementById
+        const body = {
+            nome: document.getElementById("novoNome").value,
+            cpf: document.getElementById("novoCpf").value,
+            telefone: document.getElementById("novoTelefone").value,
+            endereco: document.getElementById("novoEndereco").value
+        };
+        
+        const msg = document.getElementById("msgCadastro");
+        msg.innerHTML = "Cadastrando...";
+
+        try {
+            const res = await fetch('http://localhost:5000/api/clientes', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+            
+            msg.innerHTML = res.ok
+                ? `<span style="color:green">Cadastrado com sucesso! ID ${data.id}</span>`
+                : `<span style="color:red">Erro: ${data.error || 'Falha no cadastro'}</span>`;
+                
+            if(res.ok) {
+                // Limpa os campos após cadastrar
+                document.getElementById("novoNome").value = "";
+                document.getElementById("novoCpf").value = "";
+                document.getElementById("novoTelefone").value = "";
+                document.getElementById("novoEndereco").value = "";
+            }
+        } catch (e) {
+            msg.innerHTML = `<span style="color:red">Erro de conexão com a API.</span>`;
+        }
+    }
+
+    async function consultarCpf() {
+        const cpf = document.getElementById("buscaCpf").value;
+        const resultado = document.getElementById("resultadoCpf");
+        
+        if(!cpf) {
+            resultado.innerHTML = '<span style="color:#888">Digite um CPF.</span>';
+            return;
+        }
+
+        resultado.innerHTML = 'Buscando...';
+        
+        try {
+            // CORRIGIDO: Adicionado o ?q= na URL para a busca funcionar
+            const res = await fetch('http://localhost:5000/api/clientes?q=' + encodeURIComponent(cpf));
+            const lista = await res.json();
+            
+            // Filtrar por match exato do CPF
+            const c = lista.find(x => x.cpf === cpf);
+            
+            resultado.innerHTML = c
+                ? `<div style="background:#f9f9f9; padding:10px; border-radius:4px; border:1px solid #ccc;">
+                     <b>${c.nome}</b><br>
+                     CPF: ${c.cpf}<br>
+                     Tel: ${c.telefone || '-'}<br>
+                     End: ${c.endereco || '-'}
+                   </div>`
+                : '<span style="color:#888">Nenhum cliente encontrado com este CPF.</span>';
+        } catch (e) {
+            resultado.innerHTML = `<span style="color:red">Erro ao buscar: Verifique se a API está rodando.</span>`;
+        }
+    }
+</script>
+
+</body>
+</html>
