@@ -1,36 +1,34 @@
 import axios from 'axios';
+import type { TicketPriority } from '../types/queue';
 
-// Aponta diretamente para a porta 5000 definida no Program.cs do backend
-export const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+const api = axios.create({
+  baseURL: 'http://localhost:5000/api' // Ajuste para a porta do seu .NET
 });
 
-// Funções para consumir os endpoints da API de filas
-export const queueService = {
-  // Buscar todas as senhas da fila
-  getTickets: async () => {
-    const response = await api.get('/tickets');
+export interface Customer {
+  id: number;
+  nome: string;
+  cpf: string;
+  telefone?: string;
+  endereco?: string;
+}
+
+export const customerService = {
+  // Buscar clientes com suporte à barra de pesquisa (Query `q`)
+  search: async (query: string = ''): Promise<Customer[]> => {
+    const response = await api.get(`/clientes?q=${encodeURIComponent(query)}`);
     return response.data;
   },
 
-  // Gerar nova senha no Kiosque
-  createTicket: async (data: { customerName: string; priority: 'normal' | 'preferential' }) => {
-    const response = await api.post('/tickets', data);
+  // Criar um novo cliente
+  create: async (data: Omit<Customer, 'id'>): Promise<Customer> => {
+    const response = await api.post('/clientes', data);
     return response.data;
   },
 
-  // Chamar próximo cliente no Guichê
-  callNext: async (serviceWindow: string) => {
-    const response = await api.post('/tickets/call-next', { serviceWindow });
+  // Gerar senha a partir de um cliente cadastrado (ajuste a rota conforme o SenhasController)
+  generateTicketForCustomer: async (customerId: number, priority: TicketPriority) => {
+    const response = await api.post('/senhas', { customerId, priority });
     return response.data;
-  },
-
-  // Concluir um atendimento
-  completeTicket: async (id: string) => {
-    const response = await api.put(`/tickets/${id}/complete`);
-    return response.data;
-  },
+  }
 };
