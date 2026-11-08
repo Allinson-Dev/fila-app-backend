@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-black: #0E0C0C;
+  --color-brand-rose: #EAA4A8;
+  --color-brand-rose-light: #F3C5C8;
+  --color-brand-nude: #9E7B7A;
+  --color-brand-sage: #9AA082;
+  --color-brand-sage-light: #C2C8AA;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-brand-pearl);
+    color: var(--color-brand-coffee);
+    font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  }
+}

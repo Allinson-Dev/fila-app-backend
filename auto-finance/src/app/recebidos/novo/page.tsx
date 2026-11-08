@@ -1,9 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { criarRecebidos } from "@/actions/recebidos";
+import { useRouter } from "next/navigation";
+
+import {
+  criarRecebimentoAction,
+} from "../../actions/recebimentos";
 
 export default function NovoRecebimentoPage() {
+  const router = useRouter();
+
   const [descricao, setDescricao] =
     useState("");
 
@@ -11,28 +17,48 @@ export default function NovoRecebimentoPage() {
     useState("CLT");
 
   const [valor, setValor] =
-    useState("");
+    useState("1000");
 
   const [dataPrevista, setDataPrevista] =
     useState("");
+
+  function handleOrigemChange(
+    origemSelecionada: string
+  ) {
+    setOrigem(origemSelecionada);
+
+    if (origemSelecionada === "CLT") {
+      setValor("1000");
+      return;
+    }
+
+    if (origemSelecionada === "VALE") {
+      setValor("882");
+      return;
+    }
+
+    setValor("");
+  }
 
   async function handleSubmit(
     e: React.FormEvent
   ) {
     e.preventDefault();
 
-    await criarRecebimento({
-      descricao,
-      origem,
-      valor: Number(valor),
-      dataPrevista,
-    });
+    try {
+      await criarRecebimentoAction({
+        descricao,
+        origem,
+        valor: Number(valor),
+        dataPrevista,
+      });
 
-    alert("Recebimento salvo!");
-
-    setDescricao("");
-    setValor("");
-    setDataPrevista("");
+      router.push("/recebidos");
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao salvar recebimento");
+    }
   }
 
   return (
@@ -57,7 +83,9 @@ export default function NovoRecebimentoPage() {
         <select
           value={origem}
           onChange={(e) =>
-            setOrigem(e.target.value)
+            handleOrigemChange(
+              e.target.value
+            )
           }
           className="w-full border p-3"
         >
@@ -84,6 +112,10 @@ export default function NovoRecebimentoPage() {
           <option value="PROJETO">
             PROJETO
           </option>
+
+          <option value="OUTROS">
+            OUTROS
+          </option>
         </select>
 
         <input
@@ -92,6 +124,10 @@ export default function NovoRecebimentoPage() {
           value={valor}
           onChange={(e) =>
             setValor(e.target.value)
+          }
+          readOnly={
+            origem === "CLT" ||
+            origem === "VALE"
           }
           className="w-full border p-3"
         />

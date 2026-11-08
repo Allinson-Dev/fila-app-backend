@@ -1,44 +1,18 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import {
+  criarRecebimento,
+} from "@/repositories/lancamentos.repository";
 
-interface NovoRecebimento {
+interface CriarRecebimentoDTO {
   descricao: string;
   origem: string;
   valor: number;
   dataPrevista: string;
 }
 
-export async function criarRecebimento(
-  payload: NovoRecebimento
+export async function criarRecebimentoAction(
+  payload: CriarRecebimentoDTO
 ) {
-  const categoria =
-    payload.origem === "CLT" ||
-    payload.origem === "VALE"
-      ? "FIXO"
-      : "VARIAVEL";
-
-  const { error } = await supabase
-    .from("lancamentos")
-    .insert({
-      descricao: payload.descricao,
-
-      origem: payload.origem,
-
-      valor: payload.valor,
-
-      tipo: "ENTRADA",
-
-      categoria,
-
-      status: "PENDENTE",
-
-      data_prevista: payload.dataPrevista,
-    });
-
-  if (error) {
-    throw error;
-  }
-
-  return true;
+  return await criarRecebimento(payload);
 }

@@ -1,0 +1,6 @@
+@lumos_workspace_HostAddress = http://localhost:5009
+
+GET {{lumos_workspace_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

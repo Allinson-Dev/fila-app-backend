@@ -39,3 +39,21 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# IDE
+.vscode/
+.idea/
+
+# Windows
+Thumbs.db
+
+# Local databases
+*.sqlite
+*.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Environment
+.env*
+!.env.example
